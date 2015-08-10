@@ -44,14 +44,11 @@ public final class JiebaTokenFilter extends TokenFilter {
         if (tokenIter == null || !tokenIter.hasNext()) {
             if (input.incrementToken()) {
                 if (type.equals("index")) {
-                    this.log.info("结巴分词index");
                     array = segmenter.process(termAtt.toString(), SegMode.INDEX);
                 } else if (type.equals("synonym_index")) {
-                    this.log.info("结巴分词synonym_index");
                     array = segmenter
                             .process(termAtt.toString(), SegMode.INDEX);
                     List<SegToken> arrayCopy = new ArrayList<SegToken>(array);
-
                     for (SegToken token : arrayCopy) {
                         String word = token.word;
                         if (word.equals(" ")) {
@@ -69,7 +66,6 @@ public final class JiebaTokenFilter extends TokenFilter {
                     }
 
                 } else if (type.equals("other")) {
-                    this.log.info("结巴分词other");
                     array = new ArrayList<SegToken>();
                     String token = termAtt.toString();
                     char[] ctoken = token.toCharArray();
