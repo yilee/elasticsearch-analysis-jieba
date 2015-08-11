@@ -54,12 +54,9 @@ public final class JiebaTokenFilter extends TokenFilter {
                         if (word.equals(" ")) {
                             array.remove(token);
                         }
-
                         if (JiebaAnalyzer.syonoymMap.containsKey(word)) {
-                            this.log.info("find synonym word:" + word);
                             List<String> l = JiebaAnalyzer.syonoymMap.get(word);
                             for (String s : l) {
-                                this.log.info("synonym word:" + s);
                                 array.add(new SegToken(s, 0, s.length()));
                             }
                         }
