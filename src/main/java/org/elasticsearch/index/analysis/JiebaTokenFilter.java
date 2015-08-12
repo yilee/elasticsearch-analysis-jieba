@@ -77,9 +77,26 @@ public final class JiebaTokenFilter extends TokenFilter {
                     }
                     token = String.valueOf(ctoken);
                     array.add(new SegToken(token, 0, token.length()));
-                } else
+                } else if(type.equals("search")){
                     array = segmenter.process(termAtt.toString(),
                             SegMode.SEARCH);
+                } else if(type.equals("synonym_search")){
+                    array = segmenter.process(termAtt.toString(),
+                            SegMode.SEARCH);
+                    List<SegToken> arrayCopy = new ArrayList<SegToken>(array);
+                    for (SegToken token : arrayCopy) {
+                        String word = token.word;
+                        if (word.equals(" ")) {
+                            array.remove(token);
+                        }
+                        if (JiebaAnalyzer.syonoymMap.containsKey(word)) {
+                            List<String> l = JiebaAnalyzer.syonoymMap.get(word);
+                            for (String s : l) {
+                                array.add(new SegToken(s, 0, s.length()));
+                            }
+                        }
+                    }
+                }
                 tokenIter = array.iterator();
                 if (!tokenIter.hasNext())
                     return false;
