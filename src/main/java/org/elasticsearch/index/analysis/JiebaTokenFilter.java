@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 public final class JiebaTokenFilter extends TokenFilter {
 
@@ -46,12 +45,11 @@ public final class JiebaTokenFilter extends TokenFilter {
                 if (type.equals("index")) {
                     array = segmenter.process(termAtt.toString(), SegMode.INDEX);
                 } else if (type.equals("synonym_index")) {
-                    array = segmenter
-                            .process(termAtt.toString(), SegMode.INDEX);
+                    array = segmenter.process(termAtt.toString(), SegMode.INDEX);
                     List<SegToken> arrayCopy = new ArrayList<SegToken>(array);
                     for (SegToken token : arrayCopy) {
                         String word = token.word;
-                        if (word.equals(" ")) {
+                        if ("".equals(word.trim())) {
                             array.remove(token);
                         }
                         if (JiebaAnalyzer.syonoymMap.containsKey(word)) {
@@ -77,16 +75,14 @@ public final class JiebaTokenFilter extends TokenFilter {
                     }
                     token = String.valueOf(ctoken);
                     array.add(new SegToken(token, 0, token.length()));
-                } else if(type.equals("search")){
-                    array = segmenter.process(termAtt.toString(),
-                            SegMode.SEARCH);
-                } else if(type.equals("synonym_search")){
-                    array = segmenter.process(termAtt.toString(),
-                            SegMode.SEARCH);
+                } else if (type.equals("search")) {
+                    array = segmenter.process(termAtt.toString(), SegMode.SEARCH);
+                } else if (type.equals("synonym_search")) {
+                    array = segmenter.process(termAtt.toString(), SegMode.SEARCH);
                     List<SegToken> arrayCopy = new ArrayList<SegToken>(array);
                     for (SegToken token : arrayCopy) {
                         String word = token.word;
-                        if (word.equals(" ")) {
+                        if ("".equals(word.trim())) {
                             array.remove(token);
                         }
                         if (JiebaAnalyzer.syonoymMap.containsKey(word)) {
