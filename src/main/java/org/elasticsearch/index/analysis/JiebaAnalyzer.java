@@ -53,6 +53,10 @@ public class JiebaAnalyzer extends Analyzer {
             String str = null;
             while ((str = bufr.readLine()) != null) {
                 str = str.trim();
+                if(str.startsWith("#") || str.isEmpty()){
+                    continue;
+                }
+
                 String[] words = str.split(",");
                 if (words.length > 1) {
                     for (int i = 0; i < words.length; i++) {
