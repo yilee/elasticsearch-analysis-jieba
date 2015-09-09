@@ -33,7 +33,7 @@ public class JiebaAnalyzer extends Analyzer {
     private static final String STOPWORD_FILE_COMMENT = "//";
 
     //同义词map 一个词对应N个同义词的list
-    public static Map<String, List<String>> syonoymMap = new HashMap<String, List<String>>();
+    public static Map<String, List<String>> synonymMap = new HashMap<String, List<String>>();
 
 
     /**
@@ -60,13 +60,18 @@ public class JiebaAnalyzer extends Analyzer {
                 String[] words = str.split(",");
                 if (words.length > 1) {
                     for (int i = 0; i < words.length; i++) {
-                        List<String> synonmyList = new ArrayList<String>();
+                        List<String> synonymList = new ArrayList<String>();
                         for (int j = 0; j < words.length; j++) {
                             if (i != j) {
-                                synonmyList.add(words[j].toLowerCase());
+                                synonymList.add(words[j].toLowerCase());
                             }
                         }
-                        syonoymMap.put(words[i].toLowerCase(), synonmyList);
+                        if(synonymMap.containsKey(words[i].toLowerCase())){
+                            synonymMap.get(words[i].toLowerCase()).addAll(synonymList);
+
+                        }else{
+                            synonymMap.put(words[i].toLowerCase(), synonymList);
+                        }
                     }
                 }
             }
