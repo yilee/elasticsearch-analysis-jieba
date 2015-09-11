@@ -44,20 +44,43 @@ public class JiebaTokenizer extends Tokenizer {
     private int endPosition;
 
     private int skippedPositions;
+    private String type;
 
     private PositionIncrementAttribute posIncrAtt;
 
     public JiebaTokenizer(Reader in, Settings settings, Environment environment) {
         super(in);
-
-
         offsetAtt = addAttribute(OffsetAttribute.class);
         termAtt = addAttribute(CharTermAttribute.class);
         typeAtt = addAttribute(TypeAttribute.class);
         posIncrAtt = addAttribute(PositionIncrementAttribute.class);
-
         segmenter = new JiebaSegmenter();
-        //use string builder to avoid unnecessary string creation.
+        type = settings.get("seg_mode", "index");
+    }
+
+    @Override
+    public boolean incrementToken() throws IOException {
+        if(input == null){
+            return false;
+        }
+
+        if (tokenIter == null || !tokenIter.hasNext()) {
+            String se = readerToString(input);
+            tokenIter = getSegList(se).iterator();
+            if (!tokenIter.hasNext())
+                return false;
+        }
+        clearAttributes();
+        SegToken token = tokenIter.next();
+        // System.out.println("token:" + token);
+        offsetAtt.setOffset(token.startOffset, token.endOffset);
+        String tokenString = token.word;
+        termAtt.copyBuffer(tokenString.toCharArray(), 0, tokenString.length());
+        typeAtt.setType("word");
+        return true;
+    }
+
+    private String readerToString(Reader in) {
         StringBuilder builder = new StringBuilder();
         int charsRead = -1;
         char[] chars = new char[100];
@@ -71,17 +94,17 @@ public class JiebaTokenizer extends Tokenizer {
                 builder.append(chars, 0, charsRead);
         } while (charsRead > 0);
         String stringReadFromReader = builder.toString();
-        String type = settings.get("seg_mode", "index");
+        return stringReadFromReader;
+    }
 
+    private List<SegToken> getSegList(String stringReadFromReader) {
         if (type.equals("other")) {
             array = new ArrayList<SegToken>();
             String token = stringReadFromReader;
             char[] ctoken = token.toCharArray();
             for (int i = 0; i < ctoken.length; i++) {
-                        /* 全角=>半角 */
                 if (ctoken[i] > 0xFF00 && ctoken[i] < 0xFF5F)
                     ctoken[i] = (char) (ctoken[i] - 0xFEE0);
-                        /* 大写=>小写 */
                 if (ctoken[i] > 0x40 && ctoken[i] < 0x5b)
                     ctoken[i] = (char) (ctoken[i] + 0x20);
             }
@@ -97,25 +120,12 @@ public class JiebaTokenizer extends Tokenizer {
 
         for (int i = 0; i < array.size(); i++) {
             String word = array.get(i).word.trim();
-            if(!word.equals("") && !stopSet.contains(word)){
+            if (!word.equals("") && !stopSet.contains(word)) {
                 array2.add(array.get(i));
             }
         }
-        tokenIter = array2.iterator();
-    }
-
-    @Override
-    public boolean incrementToken() throws IOException {
-        if (tokenIter.hasNext()) {
-            // SegToken st  = tokenIter.next();
-            clearAttributes();
-            SegToken token = tokenIter.next();
-            offsetAtt.setOffset(token.startOffset, token.endOffset);
-            String tokenString = token.word;
-            termAtt.copyBuffer(tokenString.toCharArray(), 0, tokenString.length());
-            typeAtt.setType("word");
-            return true;
-        }
-        return false;
+        return array2;
     }
 }
+
+
