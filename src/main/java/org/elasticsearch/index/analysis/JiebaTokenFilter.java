@@ -52,8 +52,8 @@ public final class JiebaTokenFilter extends TokenFilter {
                         if ("".equals(word.trim())) {
                             array.remove(token);
                         }
-                        if (JiebaAnalyzer.syonoymMap.containsKey(word)) {
-                            List<String> l = JiebaAnalyzer.syonoymMap.get(word);
+                        if (JiebaAnalyzer.synonymMap.containsKey(word)) {
+                            List<String> l = JiebaAnalyzer.synonymMap.get(word);
                             for (String s : l) {
                                 array.add(new SegToken(s, 0, s.length()));
                             }
@@ -85,8 +85,8 @@ public final class JiebaTokenFilter extends TokenFilter {
                         if ("".equals(word.trim())) {
                             array.remove(token);
                         }
-                        if (JiebaAnalyzer.syonoymMap.containsKey(word)) {
-                            List<String> l = JiebaAnalyzer.syonoymMap.get(word);
+                        if (JiebaAnalyzer.synonymMap.containsKey(word)) {
+                            List<String> l = JiebaAnalyzer.synonymMap.get(word);
                             for (String s : l) {
                                 array.add(new SegToken(s, 0, s.length()));
                             }
