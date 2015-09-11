@@ -16,10 +16,7 @@ import org.elasticsearch.env.Environment;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 public class JiebaAnalyzer extends Analyzer {
     private final ESLogger log = Loggers.getLogger(JiebaAnalyzer.class);
@@ -28,12 +25,7 @@ public class JiebaAnalyzer extends Analyzer {
 
     private static final String DEFAULT_STOPWORD_FILE = "stopwords.txt";
 
-    private static final String DEFAULT_SYNONYM_FILE = "synonym.txt";
-
     private static final String STOPWORD_FILE_COMMENT = "//";
-
-    //同义词map 一个词对应N个同义词的list
-    public static Map<String, List<String>> synonymMap = new HashMap<String, List<String>>();
 
 
     /**
@@ -44,45 +36,6 @@ public class JiebaAnalyzer extends Analyzer {
     public static CharArraySet getDefaultStopSet() {
         return DefaultSetHolder.DEFAULT_STOP_SET;
     }
-
-    static {
-        System.out.println("start init syonoym map...");
-        try {
-            BufferedReader bufr = new BufferedReader(IOUtils.getDecodingReader(JiebaAnalyzer.class,
-                    DEFAULT_SYNONYM_FILE, StandardCharsets.UTF_8));
-            String str = null;
-            while ((str = bufr.readLine()) != null) {
-                str = str.trim();
-                if(str.startsWith("#") || str.isEmpty()){
-                    continue;
-                }
-
-                String[] words = str.split(",");
-                if (words.length > 1) {
-                    for (int i = 0; i < words.length; i++) {
-                        List<String> synonymList = new ArrayList<String>();
-                        for (int j = 0; j < words.length; j++) {
-                            if (i != j) {
-                                synonymList.add(words[j].toLowerCase());
-                            }
-                        }
-                        if(synonymMap.containsKey(words[i].toLowerCase())){
-                            synonymMap.get(words[i].toLowerCase()).addAll(synonymList);
-
-                        }else{
-                            synonymMap.put(words[i].toLowerCase(), synonymList);
-                        }
-                    }
-                }
-            }
-            System.out.println("end init syonoym map...");
-            bufr.close();
-        } catch (IOException e) {
-            System.out.println("init syonoym map error...");
-            e.printStackTrace();
-        }
-    }
-
 
     /**
      * Atomically loads the DEFAULT_STOP_SET in a lazy fashion once the outer

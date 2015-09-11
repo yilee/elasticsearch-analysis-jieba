@@ -42,25 +42,7 @@ public final class JiebaTokenFilter extends TokenFilter {
     public boolean incrementToken() throws IOException {
         if (tokenIter == null || !tokenIter.hasNext()) {
             if (input.incrementToken()) {
-                if (type.equals("index")) {
-                    array = segmenter.process(termAtt.toString(), SegMode.INDEX);
-                } else if (type.equals("synonym_index")) {
-                    array = segmenter.process(termAtt.toString(), SegMode.INDEX);
-                    List<SegToken> arrayCopy = new ArrayList<SegToken>(array);
-                    for (SegToken token : arrayCopy) {
-                        String word = token.word;
-                        if ("".equals(word.trim())) {
-                            array.remove(token);
-                        }
-                        if (JiebaAnalyzer.synonymMap.containsKey(word)) {
-                            List<String> l = JiebaAnalyzer.synonymMap.get(word);
-                            for (String s : l) {
-                                array.add(new SegToken(s, 0, s.length()));
-                            }
-                        }
-                    }
-
-                } else if (type.equals("other")) {
+                if (type.equals("other")) {
                     array = new ArrayList<SegToken>();
                     String token = termAtt.toString();
                     char[] ctoken = token.toCharArray();
@@ -68,7 +50,6 @@ public final class JiebaTokenFilter extends TokenFilter {
                         /* 全角=>半角 */
                         if (ctoken[i] > 0xFF00 && ctoken[i] < 0xFF5F)
                             ctoken[i] = (char) (ctoken[i] - 0xFEE0);
-
                         /* 大写=>小写 */
                         if (ctoken[i] > 0x40 && ctoken[i] < 0x5b)
                             ctoken[i] = (char) (ctoken[i] + 0x20);
@@ -77,21 +58,8 @@ public final class JiebaTokenFilter extends TokenFilter {
                     array.add(new SegToken(token, 0, token.length()));
                 } else if (type.equals("search")) {
                     array = segmenter.process(termAtt.toString(), SegMode.SEARCH);
-                } else if (type.equals("synonym_search")) {
-                    array = segmenter.process(termAtt.toString(), SegMode.SEARCH);
-                    List<SegToken> arrayCopy = new ArrayList<SegToken>(array);
-                    for (SegToken token : arrayCopy) {
-                        String word = token.word;
-                        if ("".equals(word.trim())) {
-                            array.remove(token);
-                        }
-                        if (JiebaAnalyzer.synonymMap.containsKey(word)) {
-                            List<String> l = JiebaAnalyzer.synonymMap.get(word);
-                            for (String s : l) {
-                                array.add(new SegToken(s, 0, s.length()));
-                            }
-                        }
-                    }
+                } else {  // "index"
+                    array = segmenter.process(termAtt.toString(), SegMode.INDEX);
                 }
                 tokenIter = array.iterator();
                 if (!tokenIter.hasNext())

@@ -16,4 +16,10 @@ public class JiebaAnalysisBinderProcessor extends
         super.processAnalyzers(analyzersBindings);
     }
 
+    @Override
+    public void processTokenizers(TokenizersBindings tokenizersBindings) {
+        tokenizersBindings.processTokenizer("jieba", JiebaTokenizerFactory.class);
+        super.processTokenizers(tokenizersBindings);
+    }
+
 }
