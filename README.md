@@ -68,6 +68,61 @@ index:
 
 ```
 
+使用示例
+
+```sh
+curl 'http://localhost:9200/useridx/_analyze?analyzer=jieba&pretty' -d '北京交通大学linkedin';echo
+```
+
+返回
+
+```javascript
+{
+  "tokens" : [ {
+    "token" : "北京",
+    "start_offset" : 0,
+    "end_offset" : 2,
+    "type" : "word",
+    "position" : 1
+  }, {
+    "token" : "交通",
+    "start_offset" : 2,
+    "end_offset" : 4,
+    "type" : "word",
+    "position" : 2
+  }, {
+    "token" : "大学",
+    "start_offset" : 4,
+    "end_offset" : 6,
+    "type" : "word",
+    "position" : 3
+  }, {
+    "token" : "北交",
+    "start_offset" : 0,
+    "end_offset" : 6,
+    "type" : "SYNONYM",
+    "position" : 4
+  }, {
+    "token" : "北京交通大学",
+    "start_offset" : 0,
+    "end_offset" : 6,
+    "type" : "SYNONYM",
+    "position" : 4
+  }, {
+    "token" : "领英中国",
+    "start_offset" : 6,
+    "end_offset" : 14,
+    "type" : "SYNONYM",
+    "position" : 5
+  }, {
+    "token" : "linkedin",
+    "start_offset" : 6,
+    "end_offset" : 14,
+    "type" : "SYNONYM",
+    "position" : 5
+  } ]
+}
+```
 
 License
 -------
